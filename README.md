@@ -1,54 +1,30 @@
 # PQWGAN - Edited
-This repository contains the PQWGAN code, originally designed and made available at [PQWGAN GitHub directory](https://github.com/jasontslxd/PQWGAN).
-This is the code of the paper _Hybrid Quantum-Classical Generative
-Adversarial Network for High Resolution Image Generation_, Tsang et al., 2023.
+This repository contains the source code for a Hybrid Generative Adversarial Network (GAN) 
+featuring a Quantum Generator and a Classical Discriminator.
 
-I changed the code by adding documentation and using it as a starting point to develop code
-for experiments related to my Master Thesis in Quantum GANs, for Maastricht University,
-Master in Data Science for Decision Making.
+This project has been carried on as part of my Thesis work for the Master in Data  Science for 
+Decision Making at Maastricht University.
 
-## TODOs
-1. Verify proper referencing of the paper.
 
+## Table of Contents
+- [Requirements and Installation](#requirements-and-installation)
+- [Contribution](#contribution)
+- [Citations and Acknowledgements](#citations-and-acknowledgements)
+
+
+
+<a name="requirements-and-installation"></a>
 ## Requirements and Installation
-We recommend working within a virtual environment. \
-Please refer to requirements.txt for required libraries and version number.
+We recommend creating and working within a virtual environment to manage project dependencies. 
+You can find a list of required libraries and their version numbers in the `requirements.txt` 
+file. This project was developed using Python 3.10.0.\
 
-**Note to self**: venv I have been using is venv1 (python 3.10) \
+**Note to Self:** The venv I have been using is `venv1`, set up for Python 3.10.
 
-To run with the values of the basic experiment (binary MNIST) with default values from the 
-original paper run the following command (note: hyperparameters values are hard-coded in the 
-functions, refer to the code):\
-`python train.py -cl "01" -d "mnist" -p 28 -l 8 -q 7 -b 25 -o "./output/231023_1953" -c 0 -ps 
-1 28 `
-
-Note: Classes can be set when calling the program, and it will automatically select a subset of 
-the data with the right classes.
-
-Where
-
-| Input     | Description                             |
-|-----------|-----------------------------------------|
-| -cl       | `string`: name of the classes in training set e.g., "01" will be digits 0 and 1 in MNIST |
-| -d        | `string`: training dataset (see folder structure) |
-| -p        | `int`: number of patches to divide the images for training |
-| -l        | `int`: number of layers |
-| -q        | `int`: number of qubits (excl. ancilla) |
-| -b        | `int`: batch size |
-| -o        | `string`: destination dir for output |
-| -c        | `bool`: whether to have  checkpoint|
-| -rn       | `bool` : if True, draw latent vector from normal distribution. Else, from uniform. |
-| -ps       | `int` `int`: shape of the image patch (for QG) |
-
-Note: the output folder will be automatically named as: 
-NumberOfClasses_NumberofPatches_NumberOfLayers_BatchSize, according to the provided parameters. 
-If specified in the parameters, randn will be added, as well as patch shape.
-
-
-
+<a name="contribution"></a>
 ## Contribution
 
-To contribute to this project, please ensure that you follow the standard Python documentation guidelines:
+If you wish to contribute to this project, please adhere to the following guidelines:
 
 - Write a descriptive docstring for each function, including:
    - Purpose:       Describe what the function does and how it does it.
@@ -56,6 +32,7 @@ To contribute to this project, please ensure that you follow the standard Python
    - Return Value:  Specify the value or values returned by the function, including data type. 
    - Usage Examples (opt.): Provide one or more examples demonstrating how to use the function correctly.
 - When calling a function, always specify the arguments with appropriate descriptions.
+
 
 ### Commit message guidelines
 Please adhere to the following guidelines for commit messages:
@@ -74,4 +51,5 @@ Please adhere to the following guidelines for commit messages:
 | merge    | Refers to merge commits when combining branches.                                                                                     |
 
 
+<a name="citations-and-acknowledgements"></a>
 ## Citations and Acknowledgements
