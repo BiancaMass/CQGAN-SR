@@ -1,6 +1,7 @@
-# PQWGAN - Edited
+# CQGAN-SR
 This repository contains the source code for a Hybrid Generative Adversarial Network (GAN) 
-featuring a Quantum Generator and a Classical Discriminator.
+featuring a Quantum Generator and a Classical Discriminator. The name CQGAN-SR stands for 
+Classical-Quantum GAN for Super Resolution.
 
 This project has been carried on as part of my Thesis work for the Master in Data  Science for 
 Decision Making at Maastricht University.
