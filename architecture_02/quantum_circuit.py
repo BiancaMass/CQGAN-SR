@@ -1,7 +1,4 @@
 import pennylane as qml
-import numpy as np
-from image_processing import input_image_generator
-import matplotlib.pyplot as plt
 
 import config_a02
 

@@ -1,6 +1,5 @@
 import numpy as np
 import torch
-from visualizations import plot_images
 
 import config_a02
 

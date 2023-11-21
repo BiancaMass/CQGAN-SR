@@ -2,17 +2,13 @@ import pennylane as qml
 import numpy as np
 # from pennylane import numpy as np
 import torch
-import os
-import matplotlib.pyplot as plt
 
 from torch.autograd import Variable
-from pennylane.optimize import GradientDescentOptimizer
 
 import config_a02
 from cost_function import cost_fn
 from my_utils import destination_qubit_index_calculator
 from quantum_circuit import circuit
-from image_processing import from_probs_to_image
 
 
 def train_model(original_images, target_images, nr_qubits, nr_layers):

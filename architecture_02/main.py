@@ -1,12 +1,8 @@
-import numpy as np
-import pennylane as qml
-import torch
-
 import config_a02
 from quantum_circuit import circuit
 from training import train_model
 from image_processing import train_test_image_generator, from_probs_to_image
-from visualizations import plot_image, plot_images
+from visualizations import plot_images
 from cost_function import cost_fn
 
 """
