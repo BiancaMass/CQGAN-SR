@@ -70,7 +70,7 @@ def from_probs_to_image(probs_tensor):
     normalized_probs = probs_tensor / probs_tensor.sum()
     # Rescale the probabilities to the range [-1, 1]
     max_val = torch.max(normalized_probs)
-    output_probs = ((normalized_probs / max_val) - 0.5) * 2
+    output_probs = (normalized_probs / max_val) # - 0.5) * 2
     output_vector = output_probs.detach().numpy().flatten()
     num_pixels = config_a02.OUTPUT_ROWS * config_a02.OUTPUT_COLS
     output_vector_subset = output_vector[:num_pixels]

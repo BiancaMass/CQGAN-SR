@@ -1,7 +1,8 @@
 import pennylane as qml
 import numpy as np
-# from pennylane import numpy as np
+import matplotlib.pyplot as plt
 import torch
+import os
 
 from torch.autograd import Variable
 
@@ -9,6 +10,7 @@ import config_a02
 from cost_function import cost_fn
 from my_utils import destination_qubit_index_calculator
 from quantum_circuit import circuit
+from image_processing import from_probs_to_image
 
 
 def train_model(original_images, target_images, nr_qubits, nr_layers):
@@ -66,29 +68,30 @@ def train_model(original_images, target_images, nr_qubits, nr_layers):
                 best_cost = loss
                 best_weights = weights
 
-            # # Uncomment to save outputs every 10 iterations
-            # output_dir = "./output/2023-11-10-1232"
+            # Uncomment to save outputs every 10 iterations
+            output_dir = config_a02.OUTPUT_DIR
             #
-            # if not os.path.exists(output_dir):
-            #     os.makedirs(output_dir)
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
 
             # Keep track of progress every 10 steps
             if n % 10 == 9 or n == steps - 1:
                 print("Cost after {} steps is {:.4f}".format(n + 1, loss))
                 # print(f"Weights after {n+1} is {weights[0][:2]}")  # to check if they are updating
             #
-            #     # Uncomment to save outputs every 10 iterations
-            #     current_probs = circuit(params=weights,
-            #                             image_angles=original_flattened,
-            #                             nr_layers=nr_layers)
-            #     current_image_output = from_probs_to_image(current_probs)
-            #     # Save the current image output with the iteration number as the title
-            #     image_title = "iteration_{}.png".format(n)
-            #     image_path = os.path.join(output_dir, image_title)
-            #     fig, ax = plt.subplots()
-            #     ax.imshow(current_image_output, cmap='gray')  # Use appropriate colormap if needed
-            #     plt.savefig(image_path, bbox_inches='tight', pad_inches=0)
-            #     plt.close(fig)
+                # Uncomment to save outputs every 10 iterations
+                current_probs = circuit(params=weights,
+                                        flat_input_image=original_flattened,
+                                        nr_layers=nr_layers,
+                                        destination_qubit_indexes=destination_qubits_indexes_var)
+                current_image_output = from_probs_to_image(current_probs)
+                # Save the current image output with the iteration number as the title
+                image_title = "iteration_{}_{}.png".format(i,n)
+                image_path = os.path.join(output_dir, image_title)
+                fig, ax = plt.subplots()
+                ax.imshow(current_image_output, cmap='gray')  # Use appropriate colormap if needed
+                plt.savefig(image_path, bbox_inches='tight', pad_inches=0)
+                plt.close(fig)
 
         # Current image pair results
         final_probs = circuit(params=best_weights,

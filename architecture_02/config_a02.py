@@ -1,7 +1,12 @@
 # Consider making this into JSON instead, and/or changing some of these parameters into command
 # line arguments (with argparse)
+from datetime import datetime
 
 from my_utils import destination_qubit_index_calculator
+
+# Utils parameters
+current_time = datetime.now()
+OUTPUT_DIR = current_time.strftime("./output/%Y-%m-%d-%H%M")
 
 # Image parameters
 INPUT_ROWS = 2
@@ -16,4 +21,4 @@ DEST_QUBIT_INDEXES = destination_qubit_index_calculator(INPUT_ROWS, INPUT_COLS)
 
 # Training parameters
 N_STEPS = 40
-TRAINING_IMAGES_NUM = 20
+TRAINING_IMAGES_NUM = 30
