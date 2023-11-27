@@ -12,14 +12,8 @@ def cost_fn(params, original_image_flat, target_image_flat, nr_layers, dest_qubi
                             destination_qubit_indexes=dest_qubit_indexes)
 
     post_measurement_probs = circuit_probs / torch.sum(circuit_probs)
-    post_processed_patch = (post_measurement_probs / torch.max(post_measurement_probs)) # - 0.5) * 2
+    post_processed_patch = (post_measurement_probs / torch.max(post_measurement_probs))
     truncated_output_tensor = post_processed_patch[:len(target_image_flat)]
-
-    # output_angles = torch.acos(torch.sqrt(circuit_probs))
-
-    # Truncate the angles to only keep the first 4
-    # Ensure you are truncating the tensor correctly, depending on the shape of circuit_probs
-    # truncated_output_angles = output_angles[:len(target_image_flat)]
 
     # Ensure target_image_flat is a tensor and has the correct shape
     # This operation should not require gradients
