@@ -16,7 +16,7 @@ from image_processing import from_probs_to_image
 def train_model(original_images, target_images, nr_qubits, nr_layers):
     ### Initialize weights ###
     # Each Rot gate needs 3 parameters, hence we have 3 random values per qubit per layer
-    weights = np.random.rand(nr_layers, nr_qubits, 3) # samples from a uniform  distr. over [0, 1).
+    weights = np.random.rand(nr_layers, nr_qubits, 3)  # sampled from a uniform  distr. over [0, 1).
     # convert into trainable param with torch framework
     weights = Variable(torch.tensor(weights), requires_grad=True)
 
@@ -35,10 +35,31 @@ def train_model(original_images, target_images, nr_qubits, nr_layers):
     # array to store the best weights
     best_weights = np.zeros((nr_layers, nr_qubits, 3))
 
+    output_dir = config_a02.OUTPUT_DIR_TRAIN
+    #
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     # optimization begins
     for i, (original_img, target_image) in enumerate(zip(original_images, target_images)):
         print('\n')
         print(f"Training on image pair {i + 1} of {len(original_images)}")
+
+        # Save current input-target image pair
+        fig, axs = plt.subplots(1, 2, figsize=(8, 4))
+        axs[0].imshow(original_img, cmap='gray')
+        axs[0].set_title('Input image')
+        axs[0].axis('off')  # Turn off axis
+
+        axs[1].imshow(target_image, cmap='gray')
+        axs[1].set_title('Target image')
+        axs[1].axis('off')
+
+        image_title = "{}_training_images.png".format(i)
+        image_path = os.path.join(output_dir, image_title)
+        plt.savefig(image_path, bbox_inches='tight', pad_inches=0)
+        plt.close(fig)
+
         # Flatten input and target images
         original_flattened = original_img.flatten()
         target_flattened = target_image.flatten()
@@ -68,17 +89,11 @@ def train_model(original_images, target_images, nr_qubits, nr_layers):
                 best_cost = loss
                 best_weights = weights
 
-            # Uncomment to save outputs every 10 iterations
-            output_dir = config_a02.OUTPUT_DIR
-            #
-            if not os.path.exists(output_dir):
-                os.makedirs(output_dir)
-
-            # Keep track of progress every 10 steps
-            if n % 10 == 9 or n == steps - 1:
+            # Keep track of progress every 15 steps
+            if n % 15 == 14 or n == steps - 1:
                 print("Cost after {} steps is {:.4f}".format(n + 1, loss))
                 # print(f"Weights after {n+1} is {weights[0][:2]}")  # to check if they are updating
-            #
+
                 # Uncomment to save outputs every 10 iterations
                 current_probs = circuit(params=weights,
                                         flat_input_image=original_flattened,
@@ -86,7 +101,7 @@ def train_model(original_images, target_images, nr_qubits, nr_layers):
                                         destination_qubit_indexes=destination_qubits_indexes_var)
                 current_image_output = from_probs_to_image(current_probs)
                 # Save the current image output with the iteration number as the title
-                image_title = "iteration_{}_{}.png".format(i,n)
+                image_title = "{}_{}_iteration.png".format(i, n)
                 image_path = os.path.join(output_dir, image_title)
                 fig, ax = plt.subplots()
                 ax.imshow(current_image_output, cmap='gray')  # Use appropriate colormap if needed
