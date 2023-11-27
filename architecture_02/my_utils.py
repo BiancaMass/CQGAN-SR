@@ -29,3 +29,11 @@ def create_dataset(images_per_set):
         images_targets.append(image_HR)
 
     return images_inputs, images_targets
+
+
+def save_variables(module, filename="variables.txt"):
+    with open(filename, "w") as file:
+        for key in dir(module):
+            if not key.startswith("__"):
+                value = getattr(module, key)
+                file.write(f"{key}: {value}\n")
