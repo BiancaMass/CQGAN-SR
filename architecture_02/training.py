@@ -90,7 +90,7 @@ def train_model(original_images, target_images, nr_qubits, nr_layers):
                 best_weights = weights
 
             # Keep track of progress every 15 steps
-            if n % 15 == 14 or n == steps - 1:
+            if n == 0 or n % 15 == 14 or n == steps - 1:
                 print("Cost after {} steps is {:.4f}".format(n + 1, loss))
                 # print(f"Weights after {n+1} is {weights[0][:2]}")  # to check if they are updating
 
@@ -114,6 +114,15 @@ def train_model(original_images, target_images, nr_qubits, nr_layers):
                               nr_layers=nr_layers,
                               destination_qubit_indexes=destination_qubits_indexes_var)
 
+        plt.figure()
+        plt.plot(cost_vector)
+        plt.xlabel("Iterations")
+        plt.ylabel("Cost")
+        plt.title(f"Cost Curve during training")
+
+        cost_curve_image_path = os.path.join(config_a02.OUTPUT_DIR, f"training_loss.png")
+        plt.savefig(cost_curve_image_path)
+        plt.close()
 
         # # TODO: use this if you have ancilla
         # # probs_given_ancilla_0 = final_probs[:2 ** (nr_qubits - 1)]  # Modify if you have ancillas
