@@ -27,21 +27,23 @@ def main(training_inputs, training_targets, val_inputs, val_targets, n_layers):
 
     # CREATE AN IMAGE OF THE CIRCUIT
     # Redirect print output to a buffer
-    old_stdout = sys.stdout
-    sys.stdout = buffer = io.StringIO()
+    # old_stdout = sys.stdout
+    # sys.stdout = buffer = io.StringIO()
 
-    print(qml.draw(circuit)(trained_weights, training_inputs[0], n_layers, config_a02.DEST_QUBIT_INDEXES))
+    image_for_drawing_circuit = flattened_lst = [item for sublist in training_inputs[0] for item in
+                                                 sublist]
+    print(qml.draw(circuit)(trained_weights, image_for_drawing_circuit, n_layers, config_a02.DEST_QUBIT_INDEXES))
 
     # Reset standard output and get buffer content
-    sys.stdout = old_stdout
-    print_output = buffer.getvalue()
-
-    # Create an image from the print output
-    image = Image.new('RGB', (700, 600), color=(255, 255, 255))  # Adjust size as needed
-    draw = ImageDraw.Draw(image)
-    draw.text((10, 10), print_output, fill=(0, 0, 0))
-    circuit_image_path = os.path.join(config_a02.OUTPUT_DIR, 'circuit_diagram.png')
-    image.save(circuit_image_path)
+    # sys.stdout = old_stdout
+    # print_output = buffer.getvalue()
+    #
+    # # Create an image from the print output
+    # image = Image.new('RGB', (700, 600), color=(255, 255, 255))  # Adjust size as needed
+    # draw = ImageDraw.Draw(image)
+    # draw.text((10, 10), print_output, fill=(0, 0, 0))
+    # circuit_image_path = os.path.join(config_a02.OUTPUT_DIR, 'circuit_diagram.png')
+    # image.save(circuit_image_path)
 
     # Save variables as a text file
     text_variables_path = os.path.join(config_a02.OUTPUT_DIR, 'variables.text')

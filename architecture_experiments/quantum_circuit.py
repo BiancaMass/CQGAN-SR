@@ -67,7 +67,7 @@ def circuit(params, flat_input_image, nr_layers: int, destination_qubit_indexes)
     for pixel, qubit_index in enumerate(destination_qubit_indexes):
         qml.RY(flat_input_image[pixel], wires=qubit_index)
 
-    # All the other are 0s # TODO: check, does Pennylane do this by default?
+    # All the other are 0s, as automatically initialized in Pennylane
 
     # Apply CNOT between the original pixels
     # TODO: when more than 2, this will have to be transformed in a loop where only relevant (
@@ -75,8 +75,13 @@ def circuit(params, flat_input_image, nr_layers: int, destination_qubit_indexes)
     qml.CNOT(wires=destination_qubit_indexes)
 
     # Apply Hadamard to all qubits
+    # for wire in destination_qubit_indexes[0]:
+    #     qml.Hadamard(wires=wire)
+
+    # Apply Hadamard to all qubits
     for wire in range(nr_qubits):
-        qml.Hadamard(wires=wire)
+        if wire == destination_qubit_indexes[0]:
+            qml.Hadamard(wires=wire)
 
     # Parameterized layer - apply repeatedly
     for j in range(nr_layers):
