@@ -1,6 +1,6 @@
 import pennylane as qml
 
-import config_a02
+import config
 
 
 # a layer of the circuit ansatz
@@ -39,7 +39,7 @@ def layer(params, nr_qubits, j):
 
 
 # Define the quantum device
-dev = qml.device("default.qubit", wires=config_a02.N_QUBITS)
+dev = qml.device("default.qubit", wires=config.N_QUBITS)
 
 
 @qml.qnode(dev, interface="torch")  # pytorch as interface for the training and backpropagation
@@ -69,19 +69,26 @@ def circuit(params, flat_input_image, nr_layers: int, destination_qubit_indexes)
 
     # All the other are 0s, as automatically initialized in Pennylane
 
-    # Apply CNOT between the original pixels
-    # TODO: when more than 2, this will have to be transformed in a loop where only relevant (
-    #  originally adjacent) pixels have a CNOT between them.
-    qml.CNOT(wires=destination_qubit_indexes)
-
     # Apply Hadamard to all qubits
+    for wire in range(nr_qubits):
+        qml.Hadamard(wires=wire)
+
+    # Apply CNOT between the original pixels
+    # TODO: when larger images, this will have to be a loop
+    # TODO: this is not accurate as the correlations are not correct, rn just dine linearly for
+    #  simplicity
+    # qml.CNOT(wires=destination_qubit_indexes)  # only works when you have 2 destination qubits
+
+    for i in range(len(destination_qubit_indexes) - 1):
+        qml.CNOT(wires=[destination_qubit_indexes[i], destination_qubit_indexes[i+1]])
+
+    # Apply Hadamard to destination qubits
     # for wire in destination_qubit_indexes[0]:
     #     qml.Hadamard(wires=wire)
 
-    # Apply Hadamard to all qubits
-    for wire in range(nr_qubits):
-        if wire == destination_qubit_indexes[0]:
-            qml.Hadamard(wires=wire)
+    # Apply CNOT to all qubits
+    # for wire in range(nr_qubits-1):
+    #     qml.CNOT(wires=[wire, wire+1])
 
     # Parameterized layer - apply repeatedly
     for j in range(nr_layers):

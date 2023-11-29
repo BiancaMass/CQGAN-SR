@@ -6,7 +6,7 @@ import os
 
 from torch.autograd import Variable
 
-import config_a02
+import config
 from cost_function import cost_fn
 from my_utils import destination_qubit_index_calculator
 from quantum_circuit import circuit
@@ -22,20 +22,20 @@ def train_model(original_images, target_images, nr_qubits, nr_layers):
 
     ### Initialize the quantum circuit ###
     dev = qml.device("default.qubit", wires=nr_qubits)
-    destination_qubits_indexes_var = destination_qubit_index_calculator(config_a02.INPUT_ROWS,
-                                                                        config_a02.INPUT_COLS)
+    destination_qubits_indexes_var = destination_qubit_index_calculator(config.INPUT_ROWS,
+                                                                        config.INPUT_COLS)
 
     # set up the optimizer
     opt = torch.optim.Adam([weights], lr=0.01)  # lr from paper
 
     # number of steps in the optimization routine
-    steps = config_a02.N_STEPS
+    steps = config.N_STEPS
     cost_vector = []
 
     # array to store the best weights
     best_weights = np.zeros((nr_layers, nr_qubits, 3))
 
-    output_dir = config_a02.OUTPUT_DIR_TRAIN
+    output_dir = config.OUTPUT_DIR_TRAIN
     #
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -69,7 +69,7 @@ def train_model(original_images, target_images, nr_qubits, nr_layers):
                             original_image_flat=original_flattened,
                             target_image_flat=target_flattened,
                             nr_layers=nr_layers,
-                            dest_qubit_indexes=config_a02.DEST_QUBIT_INDEXES)
+                            dest_qubit_indexes=config.DEST_QUBIT_INDEXES)
 
         print(f"Cost after 0 steps is {best_cost}")
 
@@ -79,7 +79,7 @@ def train_model(original_images, target_images, nr_qubits, nr_layers):
                            original_image_flat=original_flattened,
                            target_image_flat=target_flattened,
                            nr_layers=nr_layers,
-                           dest_qubit_indexes=config_a02.DEST_QUBIT_INDEXES)
+                           dest_qubit_indexes=config.DEST_QUBIT_INDEXES)
             cost_vector.append(float(loss))
             loss.backward()  # computes the gradient of the loss function wrt weights
             opt.step()  # updates weights according to the computed gradient
@@ -120,7 +120,7 @@ def train_model(original_images, target_images, nr_qubits, nr_layers):
         plt.ylabel("Cost")
         plt.title(f"Cost Curve during training")
 
-        cost_curve_image_path = os.path.join(config_a02.OUTPUT_DIR, f"training_loss.png")
+        cost_curve_image_path = os.path.join(config.OUTPUT_DIR, f"training_loss.png")
         plt.savefig(cost_curve_image_path)
         plt.close()
 

@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 
-import config_a02
+import config
 
 
 def input_image_generator(rows, cols):
@@ -71,9 +71,9 @@ def from_probs_to_image(probs_tensor):
     max_val = torch.max(normalized_probs)
     output_probs = (normalized_probs / max_val)
     output_vector = output_probs.detach().numpy().flatten()
-    num_pixels = config_a02.OUTPUT_ROWS * config_a02.OUTPUT_COLS
+    num_pixels = config.OUTPUT_ROWS * config.OUTPUT_COLS
     output_vector_subset = output_vector[:num_pixels]
-    output_matrix = output_vector_subset.reshape(config_a02.OUTPUT_ROWS, config_a02.OUTPUT_COLS)
+    output_matrix = output_vector_subset.reshape(config.OUTPUT_ROWS, config.OUTPUT_COLS)
 
     return output_matrix
 

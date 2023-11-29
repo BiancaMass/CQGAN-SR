@@ -1,5 +1,5 @@
 from image_processing import train_test_image_generator
-import config_a02
+import config
 
 
 def destination_qubit_index_calculator(original_rows_num, original_cols_num):
@@ -21,10 +21,10 @@ def create_dataset(images_per_set):
     images_targets = []
 
     for i in range(images_per_set):
-        image_LR, image_HR = train_test_image_generator(input_rows=config_a02.INPUT_ROWS,
-                                                        input_cols=config_a02.INPUT_COLS,
-                                                        output_rows=config_a02.OUTPUT_ROWS,
-                                                        output_cols=config_a02.OUTPUT_COLS)
+        image_LR, image_HR = train_test_image_generator(input_rows=config.INPUT_ROWS,
+                                                        input_cols=config.INPUT_COLS,
+                                                        output_rows=config.OUTPUT_ROWS,
+                                                        output_cols=config.OUTPUT_COLS)
         images_inputs.append(image_LR)
         images_targets.append(image_HR)
 

@@ -2,7 +2,7 @@ import os
 import torch
 import matplotlib.pyplot as plt
 
-import config_a02
+import config
 from quantum_circuit import circuit
 from image_processing import from_probs_to_image
 from visualizations import plot_images
@@ -11,8 +11,8 @@ from cost_function import cost_fn
 
 def validate_model(trained_weights, validation_inputs, validation_targets):
 
-    if not os.path.exists(config_a02.OUTPUT_DIR_VALIDATE):
-        os.makedirs(config_a02.OUTPUT_DIR_VALIDATE)
+    if not os.path.exists(config.OUTPUT_DIR_VALIDATE):
+        os.makedirs(config.OUTPUT_DIR_VALIDATE)
 
     validation_losses = []
 
@@ -22,14 +22,14 @@ def validate_model(trained_weights, validation_inputs, validation_targets):
 
         probs_validation = circuit(params=trained_weights,
                                    flat_input_image=validation_input.flatten(),
-                                   nr_layers=config_a02.N_LAYERS,
-                                   destination_qubit_indexes=config_a02.DEST_QUBIT_INDEXES)
+                                   nr_layers=config.N_LAYERS,
+                                   destination_qubit_indexes=config.DEST_QUBIT_INDEXES)
 
         validation_loss = cost_fn(params=trained_weights,
                                   original_image_flat=validation_input.flatten(),
                                   target_image_flat=validation_target.flatten(),
-                                  nr_layers=config_a02.N_LAYERS,
-                                  dest_qubit_indexes=config_a02.DEST_QUBIT_INDEXES)
+                                  nr_layers=config.N_LAYERS,
+                                  dest_qubit_indexes=config.DEST_QUBIT_INDEXES)
 
         validation_output_image = from_probs_to_image(probs_validation)
 
@@ -58,7 +58,7 @@ def validate_model(trained_weights, validation_inputs, validation_targets):
 
         # Save the figure
         image_title = "validation_set_{}.png".format(i)
-        image_path = os.path.join(config_a02.OUTPUT_DIR_VALIDATE, image_title)
+        image_path = os.path.join(config.OUTPUT_DIR_VALIDATE, image_title)
         plt.savefig(image_path, bbox_inches='tight', pad_inches=0)
         plt.close(fig)
 
@@ -74,7 +74,7 @@ def validate_model(trained_weights, validation_inputs, validation_targets):
     plt.grid(True)
 
     plot_title = "validation_losses.png"
-    plot_path = os.path.join(config_a02.OUTPUT_DIR, plot_title)
+    plot_path = os.path.join(config.OUTPUT_DIR, plot_title)
     plt.savefig(plot_path, bbox_inches='tight')
     plt.close()
 
