@@ -18,11 +18,11 @@ DEST_QUBIT_INDEXES = destination_qubit_index_calculator(INPUT_ROWS, INPUT_COLS)
 
 # Training parameters
 N_STEPS = 10
-TRAINING_IMAGES_NUM = 40
+TRAINING_IMAGES_NUM = 70
 VALIDATION_IMAGES_NUMBER = 12
 
 # Utils parameters
-ARCHITECTURE_NAME = "a-03"
+ARCHITECTURE_NAME = "temp"
 current_time = datetime.now()
 STRING_TIME = current_time.strftime("%Y-%m-%d-%H%M")
 OUTPUT_DIR = os.path.join(f"./output/{ARCHITECTURE_NAME}/{STRING_TIME}_{N_LAYERS}-{N_STEPS}"
