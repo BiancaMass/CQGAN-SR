@@ -135,5 +135,4 @@ def train_model(original_images, target_images, nr_qubits, nr_layers):
         # max_val = torch.max(normalized_probs)
         # final_post_processed_probs = (normalized_probs / max_val)
 
-
     return best_weights

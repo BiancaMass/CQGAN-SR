@@ -1,5 +1,4 @@
 import pennylane as qml
-
 import config
 
 
@@ -69,13 +68,13 @@ def circuit(params, flat_input_image, nr_layers: int, destination_qubit_indexes)
 
     # All the other are 0s, as automatically initialized in Pennylane
 
-    # Entanglement with CZ between 2 input qubits
-    for i in range(len(destination_qubit_indexes) - 1):
-        qml.CZ(wires=[destination_qubit_indexes[i], destination_qubit_indexes[i + 1]])
-
     # Apply Hadamard to all qubits
     for wire in range(nr_qubits):
         qml.Hadamard(wires=wire)
+
+    # # Entanglement with CZ between 2 input qubits
+    # for i in range(len(destination_qubit_indexes) - 1):
+    #     qml.CZ(wires=[destination_qubit_indexes[i], destination_qubit_indexes[i + 1]])
 
     # Apply CNOT between the original pixels
     # TODO: when larger images, this will have to be a loop
@@ -87,8 +86,8 @@ def circuit(params, flat_input_image, nr_layers: int, destination_qubit_indexes)
     # for i in range(len(destination_qubit_indexes) - 1):
     #     qml.CNOT(wires=[destination_qubit_indexes[i], destination_qubit_indexes[i+1]])
 
-    # Apply Hadamard to destination qubits
-    # for wire in destination_qubit_indexes[0]:
+    # Apply Hadamard to all qubits
+    # for wire in range(nr_qubits-1):
     #     qml.Hadamard(wires=wire)
 
     # Apply CNOT to all qubits
