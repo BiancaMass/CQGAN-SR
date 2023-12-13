@@ -44,29 +44,8 @@ def output_image_generator(image, nrows, ncols):
 
     return output_image
 
-
-def train_test_image_generator(input_rows: int,
-                               input_cols: int,
-                               output_rows: int,
-                               output_cols: int):
-    """Generate tuples of training set images, start (low resolution) and target (higher
-    resolution)
-    Target image are the same, multiplied by a factor of 2 per dimension.
-    Only produces square images
-
-    pixels_per_side (int): number of pixels per width = height in the LR image
-
-    Returns: LR-image, HR-image
-    """
-
-    image_LR = input_image_generator(rows=input_rows, cols=input_cols)
-    image_HR = output_image_generator(image=image_LR, nrows=output_rows, ncols=output_cols)
-
-    return image_LR, image_HR
-
 # TODO: it is not perfect, and you can think more about a definition of training images that
 #  makes sense, but it will have to do for now.
-
 
 def input_output_image_generator(dimensions=(2, 2), scaling_factor=2):
     """
@@ -107,6 +86,25 @@ def input_output_image_generator(dimensions=(2, 2), scaling_factor=2):
             output_image[row, col] = dist / max_dist
 
     return input_image, output_image
+
+
+def train_test_image_generator(input_rows: int,
+                               input_cols: int,
+                               output_rows: int,
+                               output_cols: int):
+    """Generate tuples of training set images, start (low resolution) and target (higher
+    resolution)
+    Target image are the same, multiplied by a factor of 2 per dimension.
+    Only produces square images
+
+    pixels_per_side (int): number of pixels per width = height in the LR image
+
+    Returns: LR-image, HR-image
+    """
+
+    image_LR, image_HR = input_output_image_generator()
+
+    return image_LR, image_HR
 
 
 def from_probs_to_image(probs_tensor):
