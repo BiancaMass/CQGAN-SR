@@ -22,8 +22,10 @@ def train_model(original_images, target_images, nr_qubits, nr_layers):
 
     ### Initialize the quantum circuit ###
     dev = qml.device("default.qubit", wires=nr_qubits)
-    destination_qubits_indexes_var = destination_qubit_index_calculator(config.INPUT_ROWS,
-                                                                        config.INPUT_COLS)
+    # TODO: check it calculates correctly for larger images
+    destination_qubits_indexes_var = destination_qubit_index_calculator(original_rows_num=config.INPUT_ROWS,
+                                                                        original_cols_num=config.INPUT_COLS,
+                                                                        scaling_factor=config.SCALING_FACTOR)
 
     # set up the optimizer
     opt = torch.optim.Adam([weights], lr=0.01)  # lr from paper

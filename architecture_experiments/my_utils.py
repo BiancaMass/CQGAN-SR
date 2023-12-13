@@ -2,15 +2,25 @@ from image_processing import train_test_image_generator
 import config
 
 
-def destination_qubit_index_calculator(original_rows_num, original_cols_num):
-    destination_cols = original_cols_num * 2 + 1
+def destination_qubit_index_calculator(original_rows_num, original_cols_num, scaling_factor):
+    destination_cols = original_cols_num * scaling_factor
     destination_qubit_indexes = []
-    for r in range(1, original_rows_num + 1):
-        for c in range(1, original_cols_num + 1):
-            original_i, original_j = r, c
-            destination_i, destination_j = original_i * 2, original_j * 2
-            destination_index = (destination_i - 1) * destination_cols + destination_j
+    for r in range(original_rows_num):
+        for c in range(original_cols_num):
+            destination_i, destination_j = r * scaling_factor, c * scaling_factor
+            destination_index = destination_i * destination_cols + destination_j
             destination_qubit_indexes.append(destination_index)
+
+    # OLD implementation, TODO: remove
+    # destination_cols = original_cols_num * scaling_factor
+
+    # destination_qubit_indexes = []
+    # for r in range(1, original_rows_num + 1):
+    #     for c in range(1, original_cols_num + 1):
+    #         original_i, original_j = r, c
+    #         destination_i, destination_j = original_i * 2, original_j * 2
+    #         destination_index = (destination_i - 1) * destination_cols + destination_j
+    #         destination_qubit_indexes.append(destination_index)
 
     return destination_qubit_indexes
 
@@ -23,8 +33,7 @@ def create_dataset(images_per_set):
     for i in range(images_per_set):
         image_LR, image_HR = train_test_image_generator(input_rows=config.INPUT_ROWS,
                                                         input_cols=config.INPUT_COLS,
-                                                        output_rows=config.OUTPUT_ROWS,
-                                                        output_cols=config.OUTPUT_COLS)
+                                                        scaling_factor=config.SCALING_FACTOR)
         images_inputs.append(image_LR)
         images_targets.append(image_HR)
 

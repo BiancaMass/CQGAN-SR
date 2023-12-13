@@ -90,19 +90,14 @@ def input_output_image_generator(dimensions=(2, 2), scaling_factor=2):
 
 def train_test_image_generator(input_rows: int,
                                input_cols: int,
-                               output_rows: int,
-                               output_cols: int):
+                               scaling_factor: int):
     """Generate tuples of training set images, start (low resolution) and target (higher
     resolution)
-    Target image are the same, multiplied by a factor of 2 per dimension.
-    Only produces square images
-
-    pixels_per_side (int): number of pixels per width = height in the LR image
 
     Returns: LR-image, HR-image
     """
 
-    image_LR, image_HR = input_output_image_generator()
+    image_LR, image_HR = input_output_image_generator((input_rows, input_cols), scaling_factor)
 
     return image_LR, image_HR
 

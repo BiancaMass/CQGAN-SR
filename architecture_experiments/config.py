@@ -8,13 +8,18 @@ from my_utils import destination_qubit_index_calculator
 # Image parameters
 INPUT_ROWS = 2
 INPUT_COLS = 1
-OUTPUT_ROWS = INPUT_ROWS*2 + 1
-OUTPUT_COLS = INPUT_COLS*2 + 1
+SCALING_FACTOR = 2
+OUTPUT_ROWS = INPUT_ROWS*SCALING_FACTOR
+OUTPUT_COLS = INPUT_COLS*SCALING_FACTOR
+# OUTPUT_ROWS = INPUT_ROWS*2 + 1
+# OUTPUT_COLS = INPUT_COLS*2 + 1
 
 # Circuit parameters
 N_LAYERS = 3
 N_QUBITS = OUTPUT_ROWS * OUTPUT_COLS
-DEST_QUBIT_INDEXES = destination_qubit_index_calculator(INPUT_ROWS, INPUT_COLS)
+DEST_QUBIT_INDEXES = destination_qubit_index_calculator(original_rows_num=INPUT_ROWS,
+                                                        original_cols_num=INPUT_COLS,
+                                                        scaling_factor=SCALING_FACTOR)
 
 # Training parameters
 N_STEPS = 10
