@@ -47,6 +47,7 @@ def output_image_generator(image, nrows, ncols):
 # TODO: it is not perfect, and you can think more about a definition of training images that
 #  makes sense, but it will have to do for now.
 
+
 def input_output_image_generator(dimensions=(2, 2), scaling_factor=2):
     """
     Generates and returns an input (LR) and output (corresponding HR) images.

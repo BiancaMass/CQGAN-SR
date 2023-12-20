@@ -7,7 +7,7 @@ from my_utils import destination_qubit_index_calculator
 
 # Image parameters
 INPUT_ROWS = 2
-INPUT_COLS = 1
+INPUT_COLS = 2
 SCALING_FACTOR = 2
 OUTPUT_ROWS = INPUT_ROWS*SCALING_FACTOR
 OUTPUT_COLS = INPUT_COLS*SCALING_FACTOR
@@ -23,8 +23,8 @@ DEST_QUBIT_INDEXES = destination_qubit_index_calculator(original_rows_num=INPUT_
 
 # Training parameters
 N_STEPS = 10
-TRAINING_IMAGES_NUM = 70
-VALIDATION_IMAGES_NUMBER = 12
+TRAINING_IMAGES_NUM = 10
+VALIDATION_IMAGES_NUMBER = 2
 
 # Utils parameters
 ARCHITECTURE_NAME = "temp"

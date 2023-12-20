@@ -59,7 +59,7 @@ def circuit(params, flat_input_image, nr_layers: int, destination_qubit_indexes)
       used to assign the pixel value to be encoded with a RY gate to the correct qubit.
 
     """
-    dev.reset()
+    dev.reset()  # TODO: should I do this?
     nr_qubits = dev.num_wires
 
     # Encode the original image onto the quantum state using rotation gates on the relevant qubits
@@ -78,7 +78,7 @@ def circuit(params, flat_input_image, nr_layers: int, destination_qubit_indexes)
 
     # Apply CNOT between the original pixels
     # TODO: when larger images, this will have to be a loop
-    # TODO: this is not accurate as the correlations are not correct, rn just dine linearly for
+    # TODO: this is not accurate as the correlations are not correct, rn just done linearly for
     #  simplicity
     # qml.CNOT(wires=destination_qubit_indexes)  # only works when you have 2 destination qubits
 
