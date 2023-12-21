@@ -6,13 +6,11 @@ from datetime import datetime
 from my_utils import destination_qubit_index_calculator
 
 # Image parameters
-INPUT_ROWS = 2
+INPUT_ROWS = 1
 INPUT_COLS = 2
 SCALING_FACTOR = 2
 OUTPUT_ROWS = INPUT_ROWS*SCALING_FACTOR
 OUTPUT_COLS = INPUT_COLS*SCALING_FACTOR
-# OUTPUT_ROWS = INPUT_ROWS*2 + 1
-# OUTPUT_COLS = INPUT_COLS*2 + 1
 
 # Circuit parameters
 N_LAYERS = 3
@@ -22,9 +20,9 @@ DEST_QUBIT_INDEXES = destination_qubit_index_calculator(original_rows_num=INPUT_
                                                         scaling_factor=SCALING_FACTOR)
 
 # Training parameters
-N_STEPS = 10
-TRAINING_IMAGES_NUM = 10
-VALIDATION_IMAGES_NUMBER = 2
+N_STEPS = 20
+TRAINING_IMAGES_NUM = 20
+VALIDATION_IMAGES_NUMBER = 8
 
 # Utils parameters
 ARCHITECTURE_NAME = "temp"

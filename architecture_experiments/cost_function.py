@@ -36,7 +36,7 @@ def cost_fn(params, original_image_flat, target_image_flat, nr_layers, dest_qubi
                                                           torch.Tensor) else torch.tensor(
         target_image_flat, dtype=torch.float32)
 
-    # Sum the squared differences between the output angles and the target angles
+    # Sum the squared differences between the output pixels and the target pixels
     cost += torch.sum((truncated_output_tensor - target_image_tensor) ** 2)
 
     return cost
