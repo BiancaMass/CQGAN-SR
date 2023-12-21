@@ -22,7 +22,6 @@ def train_model(original_images, target_images, nr_qubits, nr_layers):
 
     ### Initialize the quantum circuit ###
     dev = qml.device("default.qubit", wires=nr_qubits)
-    # TODO: check it calculates correctly for larger images
     destination_qubits_indexes_var = destination_qubit_index_calculator(original_rows_num=config.INPUT_ROWS,
                                                                         original_cols_num=config.INPUT_COLS,
                                                                         scaling_factor=config.SCALING_FACTOR)
@@ -49,11 +48,11 @@ def train_model(original_images, target_images, nr_qubits, nr_layers):
 
         # Save current input-target image pair
         fig, axs = plt.subplots(1, 2, figsize=(8, 4))
-        axs[0].imshow(original_img, cmap='gray')
+        axs[0].imshow(original_img, cmap='gray', vmin=0, vmax=1)
         axs[0].set_title('Input image')
         axs[0].axis('off')  # Turn off axis
 
-        axs[1].imshow(target_image, cmap='gray')
+        axs[1].imshow(target_image, cmap='gray', vmin=0, vmax=1)
         axs[1].set_title('Target image')
         axs[1].axis('off')
 
@@ -106,7 +105,7 @@ def train_model(original_images, target_images, nr_qubits, nr_layers):
                 image_title = "{}_{}_iteration.png".format(i, n)
                 image_path = os.path.join(output_dir, image_title)
                 fig, ax = plt.subplots()
-                ax.imshow(current_image_output, cmap='gray')  # Use appropriate colormap if needed
+                ax.imshow(current_image_output, cmap='gray', vmin=0, vmax=1)
                 plt.savefig(image_path, bbox_inches='tight', pad_inches=0)
                 plt.close(fig)
 

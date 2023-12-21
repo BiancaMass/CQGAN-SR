@@ -42,15 +42,15 @@ def validate_model(trained_weights, validation_inputs, validation_targets):
 
         # Plot and save validation images for each tuple
         fig, axs = plt.subplots(1, 3, figsize=(15, 5))
-        axs[0].imshow(validation_input, cmap='gray')
+        axs[0].imshow(validation_input, cmap='gray', vmin=0, vmax=1)
         axs[0].set_title("Input Image")
         axs[0].axis('off')
 
-        axs[1].imshow(validation_target, cmap='gray')
+        axs[1].imshow(validation_target, cmap='gray', vmin=0, vmax=1)
         axs[1].set_title("Target Image")
         axs[1].axis('off')
 
-        axs[2].imshow(validation_output_image, cmap='gray')
+        axs[2].imshow(validation_output_image, cmap='gray', vmin=0, vmax=1)
         axs[2].set_title("Output Image")
         axs[2].axis('off')
 
