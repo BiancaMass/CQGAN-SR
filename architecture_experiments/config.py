@@ -6,7 +6,7 @@ from datetime import datetime
 from my_utils import destination_qubit_index_calculator
 
 # Image parameters
-INPUT_ROWS = 1
+INPUT_ROWS = 2
 INPUT_COLS = 2
 SCALING_FACTOR = 2
 OUTPUT_ROWS = INPUT_ROWS*SCALING_FACTOR
