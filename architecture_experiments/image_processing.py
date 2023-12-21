@@ -75,7 +75,7 @@ def input_output_image_generator(dimensions=(2, 2), scaling_factor=2):
     black_pixel_row_out = black_pixel_row_in * scaling_factor
     black_pixel_col_out = black_pixel_col_in * scaling_factor
 
-    # Initialize the output image
+    # # Initialize the output image
     output_image = np.ones((nrows_out, ncols_out))
 
     max_dist = np.sqrt(max(black_pixel_row_out, nrows_out - 1 - black_pixel_row_out)**2 +
