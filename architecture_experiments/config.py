@@ -3,7 +3,7 @@
 import os
 from datetime import datetime
 
-from my_utils import destination_qubit_index_calculator
+from architecture_experiments.my_utils import destination_qubit_index_calculator
 
 # Image parameters
 INPUT_ROWS = 2

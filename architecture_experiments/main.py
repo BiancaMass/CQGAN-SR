@@ -4,10 +4,10 @@ import sys
 import os
 from PIL import Image, ImageDraw
 
-import config
+from architecture_experiments import config
 from training import train_model
 from validation import validate_model
-from my_utils import create_dataset, save_variables
+from architecture_experiments.my_utils import create_dataset, save_variables
 from quantum_circuit import circuit
 
 """

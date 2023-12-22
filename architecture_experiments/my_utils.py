@@ -1,5 +1,5 @@
-from image_processing import train_test_image_generator
-import config
+from architecture_experiments.utils.image_processing import train_test_image_generator
+from architecture_experiments import config
 
 
 def destination_qubit_index_calculator(original_rows_num, original_cols_num, scaling_factor):

@@ -1,5 +1,5 @@
 import pennylane as qml
-import config
+from architecture_experiments import config
 
 
 # a layer of the circuit ansatz
@@ -59,7 +59,7 @@ def circuit(params, flat_input_image, nr_layers: int, destination_qubit_indexes)
       used to assign the pixel value to be encoded with a RY gate to the correct qubit.
 
     """
-    dev.reset()  # TODO: should I do this?
+    # dev.reset()  # TODO: should I do this?
     nr_qubits = dev.num_wires
 
     # Encode the original image onto the quantum state using rotation gates on the relevant qubits

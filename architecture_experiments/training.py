@@ -6,11 +6,11 @@ import os
 
 from torch.autograd import Variable
 
-import config
+from architecture_experiments import config
 from cost_function import cost_fn
-from my_utils import destination_qubit_index_calculator
+from architecture_experiments.my_utils import destination_qubit_index_calculator
 from quantum_circuit import circuit
-from image_processing import from_probs_to_image
+from architecture_experiments.utils.image_processing import from_probs_to_image
 
 
 def train_model(original_images, target_images, nr_qubits, nr_layers):

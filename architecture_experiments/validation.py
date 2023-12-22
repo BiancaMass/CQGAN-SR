@@ -2,10 +2,9 @@ import os
 import torch
 import matplotlib.pyplot as plt
 
-import config
+from architecture_experiments import config
 from quantum_circuit import circuit
-from image_processing import from_probs_to_image
-from visualizations import plot_images
+from architecture_experiments.utils.image_processing import from_probs_to_image
 from cost_function import cost_fn
 
 

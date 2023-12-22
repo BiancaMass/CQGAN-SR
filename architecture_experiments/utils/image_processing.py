@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 
-import config
+from architecture_experiments import config
 
 
 def input_image_generator(rows, cols):
