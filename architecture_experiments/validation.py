@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from architecture_experiments import config
 from quantum_circuit import circuit
-from architecture_experiments.utils.image_processing import from_probs_to_image
+from architecture_experiments.image_processing import from_probs_to_image
 from cost_function import cost_fn
 
 

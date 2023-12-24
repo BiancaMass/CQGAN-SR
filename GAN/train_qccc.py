@@ -1,6 +1,5 @@
 import os
 import argparse
-import math
 import numpy as np
 import torch
 # import torch_directml #directml does not support complex data types
@@ -11,7 +10,7 @@ from torchvision.utils import save_image
 import config
 from utils.dataset import GeneratedImageDataset
 from utils.wgan import compute_gradient_penalty
-from QGCC import PQWGAN_CC
+from GAN.QGCC import PQWGAN_CC
 
 
 def train(layers, n_data_qubits, batch_size, out_folder, checkpoint):

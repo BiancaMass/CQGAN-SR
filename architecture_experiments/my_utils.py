@@ -1,4 +1,4 @@
-from architecture_experiments.utils.image_processing import train_test_image_generator
+from architecture_experiments.image_processing import train_test_image_generator
 from architecture_experiments import config
 
 
