@@ -10,37 +10,34 @@ from torchvision.utils import save_image
 import config
 from utils.dataset import GeneratedImageDataset
 from utils.wgan import compute_gradient_penalty
-from GAN.QGCC import PQWGAN_CC
+from GAN.QGCC import PQWGAN_QGCC
 
 
-def train(layers, n_data_qubits, batch_size, out_folder, checkpoint):
+def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, checkpoint):
     """
     Train the PQWGAN (generator and discriminator)
     Args:
         - layers (int): The number of layers in the generator.
         - n_data_qubits (int): The number of qubits, excluding the ancilla? Ancilla by default = 1.
         - batch_size (int): The batch size for training.
-        - out_folder (str): The destination folder to save the trained model.
         - checkpoint (bool): Whether to create a checkpoint to resume training.
 
     Returns: None
     """
-    device = torch.device("cpu")  # TODO: GPU
+    device = torch.device("cpu")  # NOTE: GPU
     # device = torch_directml.device() # directML does not support complex data types
-    n_epochs = 2  # TODO: EPOCHS change back to 50, original epochs
-    image_size = 28  # number of pixels. If one number, image assumed to be square. # TODO: adapt
-    channels = 1
+    n_epochs = 2  # NOTE: EPOCHS change back to 50
 
+    # TODO: dataset structure is probably not ideal
     dataset = GeneratedImageDataset(100)
 
-    ancillas = 0
+    ancillas = 0  # NOTE: change this if you want ancillas
     qubits = n_data_qubits + ancillas
 
     lr_D = 0.0002
     lr_G = 0.01
     b1 = 0
     b2 = 0.9
-    # latent_dim = qubits  # length of latent vector = number of qubits (incl. ancilla(s))
     lambda_gp = 10
     # How often to train gen and critic.E.g., if n_critic=5, train the gen every 5 critics.
     n_critic = 5
@@ -50,11 +47,14 @@ def train(layers, n_data_qubits, batch_size, out_folder, checkpoint):
 
     os.makedirs(out_dir, exist_ok=False)  # if dir already exists, raises an error
 
-    # TODO: change the Generator
-    gan = PQWGAN_CC(image_size=image_size, n_qubits=qubits, n_ancillas=ancillas, n_layers=layers)
+    gan = PQWGAN_QGCC(input_dimensions=(config.INPUT_ROWS, config.INPUT_COLS),
+                      output_dimensions=(config.OUTPUT_ROWS, config.OUTPUT_COLS),
+                      n_qubits=qubits,
+                      n_ancillas=ancillas,
+                      n_layers=layers,
+                      dest_qubit_indexes=dest_qubit_indexes)
 
-    # Assign the critic (discr.) and generator models to the target device (e.g., GPU, CPU).
-    # TODO: change for remote server implementation
+    # Assign the critic and generator models to the target device (e.g., GPU, CPU).
     critic = gan.critic.to(device)
     generator = gan.generator.to(device)
 
@@ -66,15 +66,13 @@ def train(layers, n_data_qubits, batch_size, out_folder, checkpoint):
     # Initialize an Adam optimizer for the critic.
     optimizer_C = Adam(critic.parameters(), lr=lr_D, betas=(b1, b2))
 
-    # Generate latent vectors from uniform random numbers.
-    # fixed_z = torch.rand(batch_size, latent_dim, device=device) # TODO: this has to be an image
-
+    # TODO: integrate Wasserstein distance or other cost function
     wasserstein_distance_history = []  # Store the Wasserstein distances
     saved_initial = False
     batches_done = 0
 
     # Load model checkpoints and training history if resuming training from a specific checkpoint.
-    if checkpoint != 0:
+    if checkpoint != 0: # TODO: see what happens when checkpoint is True
         critic.load_state_dict(torch.load(out_dir + f"/critic-{checkpoint}.pt"))
         generator.load_state_dict(torch.load(out_dir + f"/generator-{checkpoint}.pt"))
         wasserstein_distance_history = list(np.load(out_dir + "/wasserstein_distance.npy"))
@@ -84,11 +82,11 @@ def train(layers, n_data_qubits, batch_size, out_folder, checkpoint):
     # Begin training process of Generator and Discriminator.
     for epoch in range(n_epochs):
         print(f'Epoch number {epoch} \n')
-        # Iterate over batches in the data loader.
-        for i, (real_images, _) in enumerate(dataloader): # TODO: check what this takes
+        # Iterate over batches in the data loader. Goes over a batch of real and target images (_)
+        for i, (real_images, _) in enumerate(dataloader):
             # Generate and save initial samples if not done already. # TODO: revisit
             # if not saved_initial:
-            #     fixed_images = generator(fixed_z)
+            #     fixed_images = generator(input_image_flat)
             #     save_image(denorm(fixed_images),
             #                os.path.join(out_dir, '{}.png'.format(batches_done)), nrow=5)
             #     save_image(denorm(real_images), os.path.join(out_dir, 'real_samples.png'), nrow=5)
@@ -99,12 +97,9 @@ def train(layers, n_data_qubits, batch_size, out_folder, checkpoint):
             # Initialize the critic's optimizer (pytorch zero_grad).
             optimizer_C.zero_grad()
 
-            # latent vector
+            input_image_flat = real_images.flatten()  # this is a whole batch tho
 
-            # z = torch.rand(batch_size, latent_dim, device=device)
-            input_image_flat = real_images.flatten()  # TODO: inspect
-
-            # Give generator latent vector z to generate images. #TODO: change generator input type
+            # Give generator input image z to generate images
             fake_images = generator(input_image_flat)
 
             # Compute the critic's predictions for real and fake images.
