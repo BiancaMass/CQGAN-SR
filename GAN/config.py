@@ -25,7 +25,7 @@ TRAINING_IMAGES_NUM = 20
 VALIDATION_IMAGES_NUMBER = 8
 
 # Utils parameters
-ARCHITECTURE_NAME = "temp"
+ARCHITECTURE_NAME = "develop-GAN"
 current_time = datetime.now()
 STRING_TIME = current_time.strftime("%Y-%m-%d-%H%M")
 OUTPUT_DIR = os.path.join(f"./output/{ARCHITECTURE_NAME}/{STRING_TIME}_{N_LAYERS}-{N_STEPS}"

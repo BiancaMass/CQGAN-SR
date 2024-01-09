@@ -3,8 +3,6 @@
 import os
 from datetime import datetime
 
-from architecture_experiments.my_utils import destination_qubit_index_calculator
-
 # Image parameters
 INPUT_ROWS = 2
 INPUT_COLS = 2
@@ -15,9 +13,9 @@ OUTPUT_COLS = INPUT_COLS*SCALING_FACTOR
 # Circuit parameters
 N_LAYERS = 3
 N_QUBITS = OUTPUT_ROWS * OUTPUT_COLS
-DEST_QUBIT_INDEXES = destination_qubit_index_calculator(original_rows_num=INPUT_ROWS,
-                                                        original_cols_num=INPUT_COLS,
-                                                        scaling_factor=SCALING_FACTOR)
+# DEST_QUBIT_INDEXES = destination_qubit_index_calculator(original_rows_num=INPUT_ROWS,
+#                                                         original_cols_num=INPUT_COLS,
+#                                                         scaling_factor=SCALING_FACTOR)
 
 # Training parameters
 N_STEPS = 20
