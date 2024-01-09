@@ -100,9 +100,7 @@ class PQWGAN_QGCC():
             output_images = torch.Tensor(x.size(0), 0)
 
             for input_image in x:
-                generator_output = self.partial_trace_and_postprocess(input_image,
-                                                                      self.params
-                                                                      ).float().unsqueeze(0)
+                generator_output = self.partial_trace_and_postprocess(input_image, self.params).float()
                 output_images = torch.cat((output_images, generator_output), 1)
 
             # Reshape output (num_images, width, length)
@@ -131,13 +129,16 @@ class PQWGAN_QGCC():
 
         def partial_trace_and_postprocess(self, input_image, weights):
             # Compute the probabilities by running the quantum circuit
-            circuit_probs = self.qnode(input_image, weights)
+            if input_image.dim() > 1:
+                input_image = input_image.view(-1)
+
+            circuit_probs = self.qnode(input_image, weights, self.dest_qubit_indexes)
 
             post_measurement_probs = circuit_probs / torch.sum(circuit_probs)
             post_processed_patch = (post_measurement_probs / torch.max(post_measurement_probs))
 
             # TODO: should I return this instead?
-            truncated_output_tensor = post_processed_patch[:len(self.output_pixels)]
+            truncated_output_tensor = post_processed_patch[:self.output_pixels]
 
             # Sum the squared differences between the output pixels and the target pixels
             # cost += torch.sum((truncated_output_tensor - target_image_tensor) ** 2)
@@ -149,7 +150,7 @@ class PQWGAN_QGCC():
             # # normalize between 0, 1
             # post_processed_patch = (post_measurement_probs / torch.max(post_measurement_probs))
 
-            return post_processed_patch
+            return truncated_output_tensor
 
 
 # code that only runs when the script is executed directly, not when it is called as a module

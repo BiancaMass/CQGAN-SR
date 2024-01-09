@@ -100,7 +100,7 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, check
             input_image_flat = real_images.flatten()  # this is a whole batch tho
 
             # Give generator input image z to generate images
-            fake_images = generator(input_image_flat)
+            fake_images = generator(real_images)
 
             # Compute the critic's predictions for real and fake images.
             real_validity = critic(real_images)  # Real images. # TODO: change to 'label' image
