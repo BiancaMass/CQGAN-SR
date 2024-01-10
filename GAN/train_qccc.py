@@ -8,6 +8,7 @@ from torch.optim import Adam
 from torchvision.utils import save_image
 
 import config
+from utils.image_processing import denorm
 from utils.dataset import GeneratedImageDataset
 from utils.wgan import compute_gradient_penalty
 from GAN.QGCC import PQWGAN_QGCC
@@ -42,7 +43,9 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, check
     # How often to train gen and critic.E.g., if n_critic=5, train the gen every 5 critics.
     n_critic = 5
     sample_interval = 10
-    # Default output folder name. Change if you want to include more params.
+
+    script_directory = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(script_directory)
     out_dir = config.OUTPUT_DIR_TRAIN
 
     os.makedirs(out_dir, exist_ok=False)  # if dir already exists, raises an error
@@ -132,7 +135,7 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, check
                 # -----------------
 
                 # Generate a batch of images
-                fake_images = generator(z)  # TODO: generator does not take z anymore
+                fake_images = generator(input_images)
                 # Loss measures generator's ability to fool the discriminator
                 # Train on fake images
                 fake_validity = critic(fake_images)
@@ -153,7 +156,7 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, check
 
                 # Save generated images and model states at regular intervals
                 if batches_done % sample_interval == 0:
-                    fixed_images = generator(fixed_z)
+                    fixed_images = generator(input_images)
                     save_image(denorm(fixed_images),
                                os.path.join(out_dir, '{}.png'.format(batches_done)), nrow=5)
                     torch.save(critic.state_dict(),
