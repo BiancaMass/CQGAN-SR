@@ -83,30 +83,34 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, check
     for epoch in range(n_epochs):
         print(f'Epoch number {epoch} \n')
         # Iterate over batches in the data loader. Goes over a batch of real and target images (_)
-        for i, (real_images, _) in enumerate(dataloader):
+        for i, (input_images, target_images) in enumerate(dataloader):
             # Generate and save initial samples if not done already. # TODO: revisit
             # if not saved_initial:
             #     fixed_images = generator(input_image_flat)
             #     save_image(denorm(fixed_images),
             #                os.path.join(out_dir, '{}.png'.format(batches_done)), nrow=5)
-            #     save_image(denorm(real_images), os.path.join(out_dir, 'real_samples.png'), nrow=5)
+            #     save_image(denorm(input_images), os.path.join(out_dir, 'real_samples.png'), nrow=5)
             #     saved_initial = True
 
-            # Move real images to the specified device.
-            real_images = real_images.to(device)
+            # Move real and target images to the specified device  (CPU or GPU).
+            input_images = input_images.to(device)
+            target_images = target_images.to(device)
             # Initialize the critic's optimizer (pytorch zero_grad).
             optimizer_C.zero_grad()
 
-            input_image_flat = real_images.flatten()  # this is a whole batch tho
+            input_image_flat = input_images.flatten()  # this is a whole batch tho
 
             # Give generator input image z to generate images
-            fake_images = generator(real_images)
+            fake_images = generator(input_images)
 
-            # Compute the critic's predictions for real and fake images.
-            real_validity = critic(real_images)  # Real images. # TODO: change to 'label' image
+            # Compute the critic's predictions for real and fake images
+            #  Returns a tensor with the result of discriminator (one number between 0 and 1),
+            #  one for each image in the batch.
+            real_validity = critic(target_images)  # Real (target) images
             fake_validity = critic(fake_images)  # Fake images.
             # Calculate the gradient penalty and adversarial loss.
-            gradient_penalty = compute_gradient_penalty(critic, real_images, fake_images, device)
+            # TODO: delve in this function
+            gradient_penalty = compute_gradient_penalty(critic, target_images, fake_images, device)
             d_loss = -torch.mean(real_validity) + torch.mean(
                 fake_validity) + lambda_gp * gradient_penalty
             # Calculate Wasserstein distance.
@@ -128,7 +132,7 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, check
                 # -----------------
 
                 # Generate a batch of images
-                fake_images = generator(z)
+                fake_images = generator(z)  # TODO: generator does not take z anymore
                 # Loss measures generator's ability to fool the discriminator
                 # Train on fake images
                 fake_validity = critic(fake_images)

@@ -33,7 +33,7 @@ class PQWGAN_QGCC():
         self.input_pixels = input_width * input_height
         self.output_pixels = output_width * output_height
 
-        self.critic = self.ClassicalCritic(self.input_pixels)
+        self.critic = self.ClassicalCritic(self.output_pixels)
         self.generator = self.QuantumGenerator(output_dimensions=(self.output_width, self.output_height),
                                                n_qubits=n_qubits,
                                                n_ancillas=n_ancillas,
@@ -42,12 +42,12 @@ class PQWGAN_QGCC():
 
     class ClassicalCritic(nn.Module):
         # takes the image either real or generated and decides which one it is
-        def __init__(self, input_pixels):
+        def __init__(self, output_pixels):
             super().__init__()
-            self.input_pixels = input_pixels
+            self.output_pixels = output_pixels
 
             # TODO: number of neurons might no longer be appropriate
-            self.fc1 = nn.Linear(int(self.input_pixels), 512)
+            self.fc1 = nn.Linear(int(self.output_pixels), 512)
             self.fc2 = nn.Linear(512, 256)
             self.fc3 = nn.Linear(256, 1)
 
@@ -97,15 +97,22 @@ class PQWGAN_QGCC():
                 torch.Tensor: Output tensor containing a batch of processed images, reshaped to
                 (num_images, width, length).
             """
-            output_images = torch.Tensor(x.size(0), 0)
+            # Initialize an empty list to store the outputs
+            output_images_list = []
 
             for input_image in x:
                 generator_output = self.partial_trace_and_postprocess(input_image, self.params).float()
-                output_images = torch.cat((output_images, generator_output), 1)
+                # Ensure generator_output is 2D (batch size x output size)
+                generator_output = generator_output.unsqueeze(0)
+                # Append the generator_output to the list
+                output_images_list.append(generator_output)
+
+            # Concatenate all outputs along dimension 1
+            output_images = torch.cat(output_images_list, 1)
 
             # Reshape output (num_images, width, length)
-            final_out = output_images.view(output_images.shape[0], self.output_width, self.output_height)
-
+            final_out = output_images.view(x.shape[0], self.output_width,
+                                           self.output_height)
             return final_out
 
         def circuit(self, input_image_flat, weights, dest_qubit_indexes):
@@ -137,7 +144,6 @@ class PQWGAN_QGCC():
             post_measurement_probs = circuit_probs / torch.sum(circuit_probs)
             post_processed_patch = (post_measurement_probs / torch.max(post_measurement_probs))
 
-            # TODO: should I return this instead?
             truncated_output_tensor = post_processed_patch[:self.output_pixels]
 
             # Sum the squared differences between the output pixels and the target pixels
