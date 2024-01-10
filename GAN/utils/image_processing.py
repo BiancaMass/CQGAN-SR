@@ -114,3 +114,16 @@ def from_probs_to_image(probs_tensor):
     output_matrix = output_vector_subset.reshape(config.OUTPUT_ROWS, config.OUTPUT_COLS)
 
     return output_matrix
+
+
+def denorm(x):
+    """
+    Denormalizes x from the range [-1, 1] to the range [0, 1].
+    Assumes that the input tensor or value `x` is between [-1, 1].
+    Args:
+        x (torch.Tensor or float): The tensor or value to be denormalized.
+    Returns:
+        torch.Tensor or float: The denormalized tensor or value, clamped between 0 and 1.
+    """
+    out = (x + 1) / 2
+    return out.clamp(0, 1)
