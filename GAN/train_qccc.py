@@ -62,14 +62,12 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, check
     generator = gan.generator.to(device)
 
     # DataLoader from Pytorch to efficiently load and iterate over batches from the given dataset.
-    # TODO: checks that this loads properly
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=1)
     # Initialize an Adam optimizer for the generator.
     optimizer_G = Adam(generator.parameters(), lr=lr_G, betas=(b1, b2))
     # Initialize an Adam optimizer for the critic.
     optimizer_C = Adam(critic.parameters(), lr=lr_D, betas=(b1, b2))
 
-    # TODO: integrate Wasserstein distance or other cost function
     wasserstein_distance_history = []  # Store the Wasserstein distances
     saved_initial = False
     batches_done = 0
@@ -157,8 +155,11 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, check
                 # Save generated images and model states at regular intervals
                 if batches_done % sample_interval == 0:
                     fixed_images = generator(input_images)
+                    fixed_images = fixed_images.unsqueeze(1) # adds one dimension so that
+                    # save_image works (1 b/c 1 color channel, as it is grayscale)
+                    # TODO: should I denorm?
                     save_image(denorm(fixed_images),
-                               os.path.join(out_dir, '{}.png'.format(batches_done)), nrow=5)
+                               os.path.join(out_dir, '{}.png'.format(batches_done)))
                     torch.save(critic.state_dict(),
                                os.path.join(out_dir, 'critic-{}.pt'.format(batches_done)))
                     torch.save(generator.state_dict(),
