@@ -99,8 +99,6 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, check
             # Initialize the critic's optimizer (pytorch zero_grad).
             optimizer_C.zero_grad()
 
-            input_image_flat = input_images.flatten()  # this is a whole batch tho
-
             # Give generator input image z to generate images
             fake_images = generator(input_images)
 

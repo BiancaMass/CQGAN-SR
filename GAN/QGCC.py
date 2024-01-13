@@ -46,10 +46,9 @@ class PQWGAN_QGCC():
             super().__init__()
             self.output_pixels = output_pixels
 
-            # TODO: number of neurons might no longer be appropriate
-            self.fc1 = nn.Linear(int(self.output_pixels), 512)
-            self.fc2 = nn.Linear(512, 256)
-            self.fc3 = nn.Linear(256, 1)
+            self.fc1 = nn.Linear(int(self.output_pixels), 128)  # Note: was 512
+            self.fc2 = nn.Linear(128, 64)  # Note: was 256
+            self.fc3 = nn.Linear(64, 1)
 
         def forward(self, x):
             x = x.view(x.shape[0], -1)  # Flatten input image
@@ -76,7 +75,7 @@ class PQWGAN_QGCC():
             ### Initialize weights ###
             # Each Rot gate needs 3 parameters, hence we have 3 random values per qubit per layer
             # sampled from a uniform  distr. over [0, 1).
-            # TODO: are these updated during training?
+            # CHECK: are these updated during training?
             weights = np.random.rand(self.n_layers, self.n_qubits, 3)
             # convert into trainable param with torch framework
             # self.params = Variable(torch.tensor(weights), requires_grad=True)
@@ -88,7 +87,7 @@ class PQWGAN_QGCC():
                                    device=self.q_device,  # the pennylane device initialized above
                                    interface="torch")    # The interface for classical backprop.
 
-        def forward(self, x):  # TODO: this should get the input image as input
+        def forward(self, x):  # CHECK: does it get the input image as input?
             """ Perform a forward pass through the QuantumGenerator.
 
             Args:
@@ -113,6 +112,9 @@ class PQWGAN_QGCC():
             # Reshape output (num_images, width, length)
             final_out = output_images.view(x.shape[0], self.output_width,
                                            self.output_height)
+
+            # TODO: normalize between 0 and 1   ??
+
             return final_out
 
         def circuit(self, input_image_flat, weights, dest_qubit_indexes):
@@ -149,7 +151,7 @@ class PQWGAN_QGCC():
             # Sum the squared differences between the output pixels and the target pixels
             # cost += torch.sum((truncated_output_tensor - target_image_tensor) ** 2)
 
-            # TODO: think about presence of ancillas
+            # TODO: think about presence of ancillas - insert ancillas
             # probs_given_ancilla_0 = probs[:2 ** (self.n_qubits - self.n_ancillas)]
             # post_measurement_probs = probs_given_ancilla_0 / torch.sum(probs_given_ancilla_0)
             #

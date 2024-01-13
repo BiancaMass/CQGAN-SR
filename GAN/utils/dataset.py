@@ -2,7 +2,7 @@ from torch.utils.data import Dataset
 import numpy as np
 import torch
 
-from image_processing import input_output_image_generator
+from utils.image_processing import input_output_image_generator
 
 
 class GeneratedImageDataset(Dataset):
