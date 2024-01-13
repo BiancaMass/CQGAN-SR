@@ -8,7 +8,7 @@ from torch.optim import Adam
 from torchvision.utils import save_image
 
 import config
-from utils.image_processing import denorm
+from utils.image_processing import denorm, normalize_small
 from utils.dataset import GeneratedImageDataset
 from utils.wgan import compute_gradient_penalty
 from GAN.QGCC import PQWGAN_QGCC
@@ -85,17 +85,20 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, check
         print(f'Epoch number {epoch} \n')
         # Iterate over batches in the data loader. Goes over a batch of real and target images (_)
         for i, (input_images, target_images) in enumerate(dataloader):
-            # Generate and save initial samples if not done already. # TODO: revisit
-            # if not saved_initial:
-            #     fixed_images = generator(input_image_flat)
-            #     save_image(denorm(fixed_images),
-            #                os.path.join(out_dir, '{}.png'.format(batches_done)), nrow=5)
-            #     save_image(denorm(input_images), os.path.join(out_dir, 'real_samples.png'), nrow=5)
-            #     saved_initial = True
-
             # Move real and target images to the specified device  (CPU or GPU).
             input_images = input_images.to(device)
             target_images = target_images.to(device)
+
+            # Generate and save initial samples if not done already.
+            # TODO: this give me an error, not sure why
+            # if not saved_initial:
+            #     fixed_images = generator(input_images)
+            #     save_image(normalize_small(fixed_images),
+            #                os.path.join(out_dir, '{}.png'.format(batches_done)))
+            #     save_image(normalize_small(input_images), os.path.join(out_dir, 'real_samples.png'),
+            #                nrow=5)
+            #     saved_initial = True
+
             # Initialize the critic's optimizer (pytorch zero_grad).
             optimizer_C.zero_grad()
 
@@ -108,7 +111,6 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, check
             real_validity = critic(target_images)  # Real (target) images
             fake_validity = critic(fake_images)  # Fake images.
             # Calculate the gradient penalty and adversarial loss.
-            # TODO: delve in this function
             gradient_penalty = compute_gradient_penalty(critic, target_images, fake_images, device)
             d_loss = -torch.mean(real_validity) + torch.mean(
                 fake_validity) + lambda_gp * gradient_penalty
@@ -155,14 +157,20 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, check
                     fixed_images = generator(input_images)
                     fixed_images = fixed_images.unsqueeze(1) # adds one dimension so that
                     # save_image works (1 b/c 1 color channel, as it is grayscale)
-                    # TODO: should I denorm?
-                    save_image(denorm(fixed_images),
+                    # todo: easier way to do it? # Ensure the tensor is in the range [0, 1]
+                    #   normalized_images = torch.clamp(normalized_images, 0, 1)
+                    normalized = normalize_small(fixed_images)
+                    save_image(normalized,
                                os.path.join(out_dir, '{}.png'.format(batches_done)))
+                    # save_image(denorm(fixed_images),
+                    #            os.path.join(out_dir, '{}.png'.format(batches_done)))
                     torch.save(critic.state_dict(),
                                os.path.join(out_dir, 'critic-{}.pt'.format(batches_done)))
                     torch.save(generator.state_dict(),
                                os.path.join(out_dir, 'generator-{}.pt'.format(batches_done)))
                     print("saved images and state")
+
+
 
 
 # Define the command-line arguments using argparse
