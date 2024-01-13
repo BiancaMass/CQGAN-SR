@@ -127,3 +127,15 @@ def denorm(x):
     """
     out = (x + 1) / 2
     return out.clamp(0, 1)
+
+
+def normalize_small(x):
+    max_value = torch.max(x)
+    min_value = torch.min(x)
+
+    if max_value == min_value:
+        raise ValueError("Cannot normalize when all values are the same.")
+
+    normalized = (x - min_value) / (max_value - min_value)
+
+    return normalized
