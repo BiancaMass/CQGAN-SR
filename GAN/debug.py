@@ -17,6 +17,7 @@ def debug_train():
                                                             original_cols_num=config.INPUT_COLS,
                                                             scaling_factor=config.SCALING_FACTOR)
     batch_size = 8  # batch size for training
+    n_epochs = config.N_EPOCHS
     # out_folder = config.OUTPUT_DIR  # output folder for saving results
 
     # Create the output directory if it doesn't exist
@@ -26,7 +27,7 @@ def debug_train():
     checkpoint = 0  # Start training from the beginning
 
     # Call the train function with the debugging parameters
-    train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, checkpoint)
+    train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, n_epochs, checkpoint)
 
 if __name__ == "__main__":
     debug_train()

@@ -11,10 +11,10 @@ import config
 from utils.image_processing import denorm, normalize_small
 from utils.dataset import GeneratedImageDataset
 from utils.wgan import compute_gradient_penalty
-from GAN.QGCC import PQWGAN_QGCC
+from QGCC import PQWGAN_QGCC
 
 
-def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, checkpoint):
+def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, n_epochs, checkpoint):
     """
     Train the PQWGAN (generator and discriminator)
     Args:
@@ -27,10 +27,9 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, check
     """
     device = torch.device("cpu")  # NOTE: GPU
     # device = torch_directml.device() # directML does not support complex data types
-    n_epochs = 2  # NOTE: EPOCHS change back to 50
 
-    # TODO: dataset structure is probably not ideal
-    dataset = GeneratedImageDataset(100)
+    # check: dataset structure is probably not ideal
+    dataset = GeneratedImageDataset(num_images=100, dimensions=(config.INPUT_ROWS, config.INPUT_COLS), scaling_factor=2)
 
     ancillas = 0  # NOTE: change this if you want ancillas
     qubits = n_data_qubits + ancillas

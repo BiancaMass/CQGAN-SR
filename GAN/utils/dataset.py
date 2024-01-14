@@ -5,6 +5,7 @@ import torch
 from utils.image_processing import input_output_image_generator
 
 
+# TODO: hard coded dimensions and scaling factor
 class GeneratedImageDataset(Dataset):
     def __init__(self, num_images, dimensions=(2, 2), scaling_factor=2):
         self.num_images = num_images
