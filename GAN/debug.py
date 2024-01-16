@@ -16,7 +16,7 @@ def debug_train():
     dest_qubit_indexes = destination_qubit_index_calculator(original_rows_num=config.INPUT_ROWS,
                                                             original_cols_num=config.INPUT_COLS,
                                                             scaling_factor=config.SCALING_FACTOR)
-    batch_size = 8  # batch size for training
+    batch_size = config.BATCH_SIZE  # batch size for training
     n_epochs = config.N_EPOCHS
     # out_folder = config.OUTPUT_DIR  # output folder for saving results
 
@@ -27,7 +27,13 @@ def debug_train():
     checkpoint = 0  # Start training from the beginning
 
     # Call the train function with the debugging parameters
-    train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, n_epochs, checkpoint)
+    train(layers=layers,
+          n_data_qubits=n_data_qubits,
+          img_size=img_size,
+          dest_qubit_indexes=dest_qubit_indexes,
+          batch_size=batch_size,
+          n_epochs=n_epochs,
+          checkpoint=checkpoint)
 
 if __name__ == "__main__":
     debug_train()

@@ -25,11 +25,13 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, n_epo
 
     Returns: None
     """
-    device = torch.device("cpu")  # NOTE: GPU
-    # device = torch_directml.device() # directML does not support complex data types
+    # device = torch.device("cpu")
+    device = torch.device("cuda:0")
+    torch.cuda.empty_cache()
+    print(f"Using {device} as computing device")
 
     # check: dataset structure is probably not ideal
-    dataset = GeneratedImageDataset(num_images=100, dimensions=(config.INPUT_ROWS, config.INPUT_COLS), scaling_factor=2)
+    dataset = GeneratedImageDataset(num_images=1000, dimensions=(config.INPUT_ROWS, config.INPUT_COLS), scaling_factor=2)
 
     ancillas = 0  # NOTE: change this if you want ancillas
     qubits = n_data_qubits + ancillas

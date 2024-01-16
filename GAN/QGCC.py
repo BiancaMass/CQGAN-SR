@@ -70,7 +70,8 @@ class PQWGAN_QGCC():
             self.n_ancillas = n_ancillas
             self.n_layers = n_layers
             self.dest_qubit_indexes = dest_qubit_indexes
-            self.q_device = qml.device("default.qubit", wires=n_qubits)
+            # self.q_device = qml.device("default.qubit", wires=n_qubits)
+            self.q_device = qml.device("lightning.gpu", wires=n_qubits)
 
             ### Initialize weights ###
             # Each Rot gate needs 3 parameters, hence we have 3 random values per qubit per layer
