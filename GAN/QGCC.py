@@ -79,7 +79,6 @@ class PQWGAN_QGCC():
             # CHECK: are these updated during training?
             weights = np.random.rand(self.n_layers, self.n_qubits, 3)
             # convert into trainable param with torch framework
-            # self.params = Variable(torch.tensor(weights), requires_grad=True)
             self.params = nn.Parameter(torch.tensor(weights, dtype=torch.float32),
                                        requires_grad=True)
             # It contains a quantum function (the variational circuit) as well as the computational
@@ -124,8 +123,8 @@ class PQWGAN_QGCC():
                 qml.RY(input_image_flat[pixel], wires=qubit_index)
 
             # Apply Hadamard to all qubits
-            for wire in range(self.n_qubits):
-                qml.Hadamard(wires=wire)
+            # for wire in range(self.n_qubits):
+            #     qml.Hadamard(wires=wire)
 
             for i in range(self.n_layers):
                 for j in range(self.n_qubits):
@@ -134,6 +133,9 @@ class PQWGAN_QGCC():
                             weights[i, j][1],
                             weights[i, j][2],
                             wires=j)
+
+            for j in range(self.n_qubits - 1):
+                qml.CNOT(wires=[j, j + 1])
 
             return qml.probs(wires=list(range(self.n_qubits)))
 
@@ -161,12 +163,3 @@ class PQWGAN_QGCC():
 
             return truncated_output_tensor
 
-
-# code that only runs when the script is executed directly, not when it is called as a module
-# if __name__ == "__main__":
-#     gen = PQWGAN_QGCC(input_dimensions=(2, 2),
-#                       output_dimensions=(4, 4),
-#                       n_qubits=8,
-#                       n_ancillas=0,
-#                       n_layers=1).generator
-#     print(qml.draw(gen.qnode)(torch.rand(5), torch.rand(1, 5, 3)))
