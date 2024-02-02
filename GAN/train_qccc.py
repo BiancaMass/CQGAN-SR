@@ -2,10 +2,13 @@ import os
 import argparse
 import numpy as np
 import torch
+import torchvision
 # import torch_directml #directml does not support complex data types
 from torch.utils.data import DataLoader
 from torch.optim import Adam
 from torchvision.utils import save_image
+from PIL import Image, ImageDraw, ImageFont
+import numpy as np
 
 import config
 from utils.image_processing import denorm, normalize_small
@@ -25,9 +28,7 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, n_epo
 
     Returns: None
     """
-    # device = torch.device("cpu")
-    device = torch.device("cuda:0")
-    torch.cuda.empty_cache()
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(f"Using {device} as computing device")
 
     # check: dataset structure is probably not ideal
@@ -86,7 +87,7 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, n_epo
         print(f'Epoch number {epoch} \n')
         # Iterate over batches in the data loader. Goes over a batch of real and target images (_)
         for i, (input_images, target_images) in enumerate(dataloader):
-            # Move real and target images to the specified device  (CPU or GPU).
+            # Move input (lr) and target (hr) images to the specified device (CPU or GPU).
             input_images = input_images.to(device)
             target_images = target_images.to(device)
 
@@ -105,6 +106,17 @@ def train(layers, n_data_qubits, img_size, dest_qubit_indexes, batch_size, n_epo
 
             # Give generator input image z to generate images
             fake_images = generator(input_images)
+
+            # Save some sample images  # Note: hard coded and temp
+            # if epoch % 4 == 0:
+            #     if i % 10 == 0:
+            #         input_filename = config.TEMP_OUT_DIR + f'input_{epoch}_{i}.png'
+            #         target_filename = config.TEMP_OUT_DIR + f'target_{epoch}_{i}.png'
+            #         generated_filename = config.TEMP_OUT_DIR + f'generated_{epoch}_{i}.png'
+            #
+            #         torchvision.utils.save_image(input_images[0], input_filename)
+            #         torchvision.utils.save_image(target_images[0], target_filename)
+            #         torchvision.utils.save_image(fake_images[0], generated_filename)
 
             # Compute the critic's predictions for real and fake images
             #  Returns a tensor with the result of discriminator (one number between 0 and 1),

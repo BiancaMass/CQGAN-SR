@@ -1,6 +1,7 @@
 # Consider making this into JSON instead, and/or changing some of these parameters into command
 # line arguments (with argparse)
 import os
+import math
 from datetime import datetime
 
 from utils.circuit_utils import destination_qubit_index_calculator
@@ -15,7 +16,8 @@ OUTPUT_COLS = INPUT_COLS*SCALING_FACTOR
 
 # Circuit parameters
 N_LAYERS = 3
-N_QUBITS = OUTPUT_ROWS * OUTPUT_COLS
+N_ANCILLAS = 1
+N_QUBITS = math.ceil(math.log(OUTPUT_ROWS * OUTPUT_COLS, 2))
 DEST_QUBIT_INDEXES = destination_qubit_index_calculator(original_rows_num=INPUT_ROWS,
                                                         original_cols_num=INPUT_COLS,
                                                         scaling_factor=SCALING_FACTOR)
@@ -28,10 +30,14 @@ N_EPOCHS = 30  # NOTE: original 50
 BATCH_SIZE = 32
 
 # Utils parameters
-ARCHITECTURE_NAME = "develop-GAN"
+ARCHITECTURE_NAME = "compacting-qubits-GAN"
 current_time = datetime.now()
 STRING_TIME = current_time.strftime("%Y-%m-%d-%H%M")
 OUTPUT_DIR = os.path.join(f"./output/{ARCHITECTURE_NAME}/{STRING_TIME}_{N_LAYERS}-{N_STEPS}"
                           f"-{TRAINING_IMAGES_NUM}")
 OUTPUT_DIR_TRAIN = os.path.join(OUTPUT_DIR, "train")
 OUTPUT_DIR_VALIDATE = os.path.join(OUTPUT_DIR, "valid")
+
+
+# EXPERIMENT = 'all_black'
+# TEMP_OUT_DIR = os.path.join(f'/Users/bmassacci/Desktop/SR-output/{EXPERIMENT}/')
